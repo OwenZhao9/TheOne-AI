@@ -10,7 +10,7 @@ TheOne 面向个人开发者、创作者和小团队：从一句需求出发，�
 
 ## 演示视频
 
-https://github.com/user-attachments/assets/3e9e17fd-7a32-446f-9595-f536592b1e84
+https://github.com/user-attachments/assets/26a44f2f-71d6-471a-b99a-dc218d1315f3
 
 ## 核心能力
 
