@@ -1,0 +1,35 @@
+appId: local.owenzhao.aionpi
+productName: TheOne
+executableName: TheOne
+copyright: TheOne contributors; includes AionUi and Pi
+asar: true
+asarUnpack:
+  - 'out/main/builtin-mcp-image-gen.js'
+  - 'out/main/builtin-mcp-browser.js'
+npmRebuild: false
+directories:
+  app: .
+  output: out/aionpi
+files:
+  - out/main/**/*
+  - out/preload/**/*
+  - out/renderer/**/*
+  - LICENSE
+  - NOTICE
+  - '!node_modules/**/*'
+  - package.json
+extraMetadata:
+  name: theone
+  main: out/main/index.js
+  version: 2.2.2-pi.1
+  dependencies: {}
+extraResources:
+  - from: resources/aionpi-runtime
+    to: aionpi-runtime
+mac:
+  target: dir
+  identity: null
+  hardenedRuntime: false
+  category: public.app-category.developer-tools
+  icon: packages/desktop/src/renderer/assets/logos/brand/theone.icns
+publish: null

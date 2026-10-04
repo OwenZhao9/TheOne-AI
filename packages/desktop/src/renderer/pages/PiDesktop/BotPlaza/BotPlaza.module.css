@@ -1,0 +1,131 @@
+.plaza {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 44px 36px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.header h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+.header p,
+.meta,
+.empty p {
+  color: var(--text-secondary);
+}
+.header p {
+  margin: 0;
+}
+.filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) 160px auto;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.card {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid var(--bg-3);
+  border-radius: 16px;
+  background: var(--bg-1);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.cardTop > div {
+  flex: 1;
+  min-width: 0;
+}
+.card h2 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  color: var(--aou-6);
+  background: var(--aou-1);
+}
+.meta {
+  font-size: 12px;
+}
+.description {
+  margin: 0;
+  line-height: 1.7;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.empty {
+  padding: 70px 10px;
+  text-align: center;
+}
+.modal {
+  width: 650px;
+  max-width: calc(100vw - 48px);
+}
+.preview {
+  border-top: 1px solid var(--bg-3);
+  padding-top: 12px;
+}
+.source {
+  color: var(--text-secondary);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+/* Extend the real entry button across the card, keeping management controls separate. */
+.enter:global(.arco-btn) {
+  position: static;
+}
+.enter::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 16px;
+}
+.enter:focus-visible::after {
+  outline: 2px solid var(--aou-6);
+  outline-offset: 2px;
+}
+.cardControl:global(.arco-btn) {
+  position: relative;
+  z-index: 2;
+}
+@media (max-width: 1000px) {
+  .plaza {
+    padding: 32px 24px;
+  }
+  .filters {
+    grid-template-columns: 1fr 130px;
+  }
+}

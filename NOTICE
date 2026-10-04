@@ -1,0 +1,76 @@
+TheOne is an independently implemented desktop integration of AionUi and Pi.
+
+AionUi (https://github.com/iOfficeAI/AionUi)
+Copyright 2025 AionUi (aionui.com). Licensed under Apache-2.0.
+The original LICENSE and source notices are preserved.
+
+Pi (https://github.com/earendil-works/pi)
+Copyright Mario Zechner. Licensed under MIT.
+The packaged application contains Pi's license and dependency notices under
+Resources/aionpi-runtime. Pi is built from the user's local fork.
+
+Node.js and its included libraries are distributed with their original LICENSE
+under Resources/aionpi-runtime/node/LICENSE.
+
+Mu / @kyrn/judge (https://github.com/qybaihe/mu)
+Copyright (c) 2025 Mario Zechner. Licensed under MIT.
+The Jev System One wire protocol adapter and three-zone decision policy in this
+integration are adapted from @kyrn/judge. Mu branding, memory, hive, swarm, and
+collaboration implementations are not included.
+
+Cua Driver (https://github.com/trycua/cua)
+Copyright Cua AI, Inc. Licensed under MIT.
+Cua Driver is an external, separately installed dependency. It is not bundled
+with TheOne. The optional cua-perception extension is not installed or used.
+
+Jev-cu (https://github.com/Sac-Y/Jev-cu)
+Copyright (c) 2026 Sac-Y. Licensed under MIT.
+The fast desktop observation/selection/execution loop references Jev-cu's
+driver separation and bounded task/resource handoff design. TheOne retains
+its existing Cua Driver rather than importing Codex's proprietary runtime.
+
+Jev Ultrafast (https://github.com/browser-use/jev-ultrafast)
+Copyright (c) 2026 Browser Use. Licensed under MIT.
+The operation-specific target choices and single-request decision validation
+are adapted to native desktop controls from Jev Ultrafast's model.py.
+
+MIT License (applicable to the above Jev-cu and Jev Ultrafast portions):
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+
+Pi license:
+MIT License
+
+Copyright (c) 2025 Mario Zechner
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

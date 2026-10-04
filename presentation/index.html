@@ -1,0 +1,1640 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TheOne 万能助手｜AI 零边际</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500;1,8..60,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===========================================
+       SIGNAL / THEONE PRESENTATION THEME
+       The selected frontend-slides Signal recipe:
+       navy + warm paper + one antique-gold accent.
+       =========================================== */
+      :root {
+        --navy: #1c2644;
+        --navy-alt: #232f55;
+        --cream: #f0ece3;
+        --cream-alt: #e6e0d4;
+        --text-warm: #e2dcd0;
+        --text-muted-dark: #8a96a8;
+        --text-hint-dark: #4e5a6e;
+        --ink: #1a2030;
+        --text-muted-light: #5a6270;
+        --text-hint-light: #9aa0a8;
+        --gold: #c8a870;
+        --border-dark: #2e3d5c;
+        --border-light: #cac4b4;
+        --stage-bg: #10172a;
+        --font-display: 'Source Serif 4', 'Noto Sans SC', Georgia, serif;
+        --font-body: 'DM Sans', 'Noto Sans SC', system-ui, sans-serif;
+        --font-label: 'IBM Plex Mono', 'Noto Sans SC', monospace;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* ===========================================
+       BASE STYLES
+       =========================================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: var(--stage-bg);
+      }
+
+      /* ===========================================
+       FIXED 16:9 STAGE: MANDATORY BASE STYLES
+       Full contents of frontend-slides viewport-base.css.
+       =========================================== */
+      .deck-viewport {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        background: var(--stage-bg);
+      }
+      .deck-stage {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        transform-origin: 0 0;
+        background: var(--slide-bg, #fff);
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        display: block;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        background: var(--slide-bg, #fff);
+      }
+      .slide.active,
+      .slide.visible {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 1;
+      }
+      img,
+      video,
+      canvas,
+      svg {
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .deck-controls {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        z-index: 1000;
+      }
+      @media print {
+        html,
+        body {
+          width: 1920px;
+          height: auto;
+          overflow: visible;
+          background: #fff;
+        }
+        .deck-viewport {
+          position: static;
+          overflow: visible;
+          background: #fff;
+        }
+        .deck-stage {
+          position: static;
+          width: auto;
+          height: auto;
+          transform: none !important;
+          background: none;
+        }
+        .slide {
+          position: relative;
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          width: 1920px;
+          height: 1080px;
+          break-after: page;
+          page-break-after: always;
+        }
+        .slide:last-child {
+          break-after: auto;
+          page-break-after: auto;
+        }
+        .deck-controls,
+        .edit-hotzone,
+        .edit-toggle,
+        .editor-status {
+          display: none !important;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.2s !important;
+        }
+      }
+
+      /* ===========================================
+       SHARED SIGNAL LAYOUT
+       =========================================== */
+      .slide.dark {
+        --slide-bg: var(--navy);
+        background: var(--navy);
+        color: var(--text-warm);
+      }
+      .slide.light {
+        --slide-bg: var(--cream);
+        background: var(--cream);
+        color: var(--ink);
+      }
+      .slide.dark::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        opacity: 0.55;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 80px 80px;
+      }
+      .slide-frame {
+        position: absolute;
+        inset: 54px 76px;
+        border: 1px solid var(--border-dark);
+        pointer-events: none;
+      }
+      .light .slide-frame {
+        border-color: var(--border-light);
+      }
+      .chrome {
+        position: absolute;
+        left: 144px;
+        right: 144px;
+        top: 74px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border-dark);
+        color: var(--text-muted-dark);
+        font: 500 18px/1 var(--font-label);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        z-index: 2;
+      }
+      .light .chrome {
+        border-color: var(--border-light);
+        color: var(--text-muted-light);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: var(--text-warm);
+        font: 600 24px/1 var(--font-body);
+        letter-spacing: -0.02em;
+        text-transform: none;
+      }
+      .light .brand {
+        color: var(--ink);
+      }
+      .brand img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+        border-radius: 11px;
+      }
+      .kicker {
+        color: var(--gold);
+        font: 500 20px/1 var(--font-label);
+        letter-spacing: 0.14em;
+      }
+      .short-rule {
+        display: block;
+        width: 36px;
+        height: 1px;
+        background: var(--gold);
+      }
+      .foot {
+        position: absolute;
+        left: 144px;
+        right: 144px;
+        bottom: 72px;
+        height: 44px;
+        padding-top: 14px;
+        border-top: 1px solid var(--border-dark);
+        color: var(--text-hint-dark);
+        font: 400 16px/1 var(--font-label);
+        letter-spacing: 0.1em;
+        z-index: 2;
+      }
+      .light .foot {
+        border-color: var(--border-light);
+        color: var(--text-hint-light);
+      }
+      .foot .right {
+        float: right;
+      }
+      .serif {
+        font-family: var(--font-display);
+      }
+      .body {
+        font-family: var(--font-body);
+      }
+      [data-editable] {
+        outline: none;
+      }
+      .edit-mode [data-editable] {
+        outline: 1px dashed rgba(200, 168, 112, 0.9);
+        outline-offset: 8px;
+        cursor: text;
+      }
+
+      /* ===========================================
+       REVEAL ANIMATIONS
+       =========================================== */
+      .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition:
+          opacity 0.72s var(--ease-out-expo),
+          transform 0.72s var(--ease-out-expo);
+      }
+      .visible .reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .visible .reveal:nth-child(2) {
+        transition-delay: 0.12s;
+      }
+      .visible .reveal:nth-child(3) {
+        transition-delay: 0.24s;
+      }
+      .visible .reveal:nth-child(4) {
+        transition-delay: 0.36s;
+      }
+      .visible .reveal:nth-child(5) {
+        transition-delay: 0.48s;
+      }
+      .visible .reveal:nth-child(6) {
+        transition-delay: 0.6s;
+      }
+      .fade-in {
+        opacity: 0;
+        transition: opacity 1s var(--ease-out-expo);
+      }
+      .visible .fade-in {
+        opacity: 1;
+      }
+
+      /* ===========================================
+       COVER
+       =========================================== */
+      .cover .cover-copy {
+        position: absolute;
+        left: 144px;
+        top: 234px;
+        z-index: 2;
+        width: 980px;
+      }
+      .cover h1 {
+        margin-top: 34px;
+        color: var(--text-warm);
+        font: 600 132px/1.02 var(--font-display);
+        letter-spacing: -0.04em;
+      }
+      .cover h1 em,
+      .dark em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .cover .lead {
+        margin-top: 34px;
+        width: 730px;
+        color: var(--text-muted-dark);
+        font: 400 31px/1.55 var(--font-body);
+      }
+      .cover .cover-meta {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        margin-top: 66px;
+        color: var(--text-hint-dark);
+        font: 500 17px/1 var(--font-label);
+        letter-spacing: 0.1em;
+      }
+      .cover .cover-meta .accent {
+        color: var(--gold);
+      }
+      .cover-orbit {
+        position: absolute;
+        right: 44px;
+        bottom: 40px;
+        width: 860px;
+        height: 860px;
+        border: 1px solid rgba(200, 168, 112, 0.44);
+        border-radius: 50%;
+      }
+      .cover-orbit::before,
+      .cover-orbit::after {
+        content: '';
+        position: absolute;
+        border: 1px solid rgba(200, 168, 112, 0.22);
+        border-radius: 50%;
+        inset: 106px;
+      }
+      .cover-orbit::after {
+        inset: 232px;
+        background: rgba(200, 168, 112, 0.06);
+      }
+      .cover-orbit .dot {
+        position: absolute;
+        top: 83px;
+        right: 237px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--gold);
+        box-shadow: 0 0 34px rgba(200, 168, 112, 0.64);
+      }
+      .cover-logo {
+        position: absolute;
+        right: 290px;
+        bottom: 255px;
+        width: 170px;
+        height: 170px;
+        object-fit: contain;
+        z-index: 2;
+        filter: drop-shadow(0 0 24px rgba(226, 220, 208, 0.18));
+      }
+
+      /* ===========================================
+       STATEMENT / CHAPTER SLIDES
+       =========================================== */
+      .statement .statement-copy {
+        position: absolute;
+        left: 144px;
+        top: 222px;
+        width: 1360px;
+        z-index: 2;
+      }
+      .statement h2 {
+        margin-top: 34px;
+        color: var(--text-warm);
+        font: 600 102px/1.08 var(--font-display);
+        letter-spacing: -0.03em;
+      }
+      .statement h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .statement .support {
+        margin-top: 44px;
+        width: 740px;
+        color: var(--text-muted-dark);
+        font: 400 30px/1.6 var(--font-body);
+      }
+      .chapter .chapter-number {
+        position: absolute;
+        left: 144px;
+        top: 190px;
+        color: var(--gold);
+        font: 500 28px/1 var(--font-label);
+        letter-spacing: 0.14em;
+      }
+      .chapter .chapter-line {
+        position: absolute;
+        left: 144px;
+        top: 270px;
+        width: 36px;
+        height: 1px;
+        background: var(--gold);
+      }
+      .chapter h2 {
+        position: absolute;
+        left: 144px;
+        top: 332px;
+        width: 1180px;
+        color: var(--text-warm);
+        font: 600 94px/1.08 var(--font-display);
+        letter-spacing: -0.035em;
+      }
+      .chapter h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .chapter .chapter-note {
+        position: absolute;
+        left: 146px;
+        top: 610px;
+        width: 620px;
+        color: var(--text-muted-dark);
+        font: 400 28px/1.65 var(--font-body);
+      }
+      .chapter .chapter-mark {
+        position: absolute;
+        right: 210px;
+        bottom: 170px;
+        width: 210px;
+        height: 210px;
+        border: 1px solid rgba(200, 168, 112, 0.44);
+        border-radius: 50%;
+      }
+      .chapter .chapter-mark::before {
+        content: '';
+        position: absolute;
+        inset: 42px;
+        border: 1px solid rgba(200, 168, 112, 0.24);
+        border-radius: 50%;
+      }
+
+      /* ===========================================
+       STANDARD CONTENT / PROCESS LAYOUTS
+       =========================================== */
+      .standard .body-grid {
+        position: absolute;
+        left: 144px;
+        right: 144px;
+        top: 190px;
+        bottom: 150px;
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 88px;
+        z-index: 2;
+      }
+      .standard h2 {
+        margin-top: 30px;
+        color: var(--text-warm);
+        font: 600 64px/1.12 var(--font-display);
+        letter-spacing: -0.025em;
+      }
+      .light h2 {
+        color: var(--ink);
+      }
+      .standard h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .standard .lead {
+        margin-top: 28px;
+        color: var(--text-muted-dark);
+        font: 400 27px/1.55 var(--font-body);
+        max-width: 700px;
+      }
+      .light .lead {
+        color: var(--text-muted-light);
+      }
+      .dash-list {
+        list-style: none;
+        margin-top: 42px;
+        display: grid;
+        gap: 24px;
+      }
+      .dash-list li {
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        gap: 12px;
+        color: var(--text-warm);
+        font: 400 23px/1.48 var(--font-body);
+      }
+      .light .dash-list li {
+        color: var(--ink);
+      }
+      .dash-list li::before {
+        content: '—';
+        color: var(--gold);
+        font: 500 20px/1.48 var(--font-label);
+      }
+      .side-rule {
+        border-left: 1px solid var(--border-dark);
+        padding-left: 52px;
+      }
+      .light .side-rule {
+        border-color: var(--border-light);
+      }
+      .side-rule .section-label {
+        color: var(--gold);
+        font: 500 17px/1 var(--font-label);
+        letter-spacing: 0.14em;
+      }
+      .side-rule .side-title {
+        margin-top: 25px;
+        color: var(--text-warm);
+        font: 500 32px/1.3 var(--font-display);
+      }
+      .light .side-rule .side-title {
+        color: var(--ink);
+      }
+      .side-rule .side-copy {
+        margin-top: 22px;
+        color: var(--text-muted-dark);
+        font: 400 21px/1.65 var(--font-body);
+      }
+      .light .side-rule .side-copy {
+        color: var(--text-muted-light);
+      }
+      .small-caption {
+        color: var(--text-hint-dark);
+        font: 400 15px/1.5 var(--font-label);
+        letter-spacing: 0.04em;
+      }
+      .light .small-caption {
+        color: var(--text-hint-light);
+      }
+
+      /* ===========================================
+       TASK FLOW
+       =========================================== */
+      .flow {
+        position: absolute;
+        left: 144px;
+        right: 144px;
+        top: 205px;
+        bottom: 170px;
+        z-index: 2;
+      }
+      .flow h2 {
+        margin-top: 30px;
+        color: var(--ink);
+        font: 600 64px/1.12 var(--font-display);
+        letter-spacing: -0.025em;
+      }
+      .flow h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .flow-intro {
+        margin-top: 25px;
+        color: var(--text-muted-light);
+        font: 400 25px/1.55 var(--font-body);
+      }
+      .flow-row {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 40px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+      }
+      .flow-step {
+        min-height: 225px;
+        padding: 22px 22px 20px;
+        border-top: 2px solid var(--gold);
+        border-bottom: 1px solid var(--border-light);
+      }
+      .flow-step .num {
+        color: var(--gold);
+        font: 600 42px/1 var(--font-display);
+      }
+      .flow-step h3 {
+        margin-top: 18px;
+        color: var(--ink);
+        font: 500 30px/1.2 var(--font-display);
+      }
+      .flow-step p {
+        margin-top: 14px;
+        color: var(--text-muted-light);
+        font: 400 18px/1.55 var(--font-body);
+      }
+      .flow-step .arrow {
+        position: absolute;
+        transform: translate(214px, -112px);
+        color: var(--border-light);
+        font: 400 23px/1 var(--font-label);
+      }
+
+      /* ===========================================
+       TASK TREE / COMPARISON
+       =========================================== */
+      .tree-panel {
+        position: absolute;
+        left: 144px;
+        top: 198px;
+        width: 940px;
+        z-index: 2;
+      }
+      .tree-panel h2 {
+        margin-top: 30px;
+        color: var(--text-warm);
+        font: 600 62px/1.12 var(--font-display);
+      }
+      .tree-panel h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .tree-panel p {
+        margin-top: 26px;
+        width: 660px;
+        color: var(--text-muted-dark);
+        font: 400 25px/1.58 var(--font-body);
+      }
+      .tree {
+        position: absolute;
+        right: 132px;
+        top: 215px;
+        width: 580px;
+        z-index: 2;
+      }
+      .tree-root {
+        padding: 22px 24px;
+        border-top: 2px solid var(--gold);
+        border-bottom: 1px solid var(--border-dark);
+        color: var(--text-warm);
+        font: 500 26px/1.25 var(--font-display);
+      }
+      .tree-branch {
+        position: relative;
+        margin-left: 44px;
+        padding: 18px 0 0 36px;
+        border-left: 1px solid var(--border-dark);
+      }
+      .tree-node {
+        position: relative;
+        padding: 17px 20px;
+        margin-bottom: 14px;
+        border-top: 1px solid var(--border-dark);
+        color: var(--text-warm);
+        font: 400 19px/1.35 var(--font-body);
+      }
+      .tree-node::before {
+        content: '';
+        position: absolute;
+        left: -37px;
+        top: 26px;
+        width: 8px;
+        height: 8px;
+        background: var(--gold);
+        border-radius: 50%;
+      }
+      .tree-node span {
+        display: block;
+        margin-top: 6px;
+        color: var(--text-hint-dark);
+        font: 400 14px/1.4 var(--font-label);
+        letter-spacing: 0.05em;
+      }
+      .compare {
+        position: absolute;
+        left: 144px;
+        right: 144px;
+        top: 214px;
+        bottom: 170px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        z-index: 2;
+      }
+      .compare-col {
+        padding: 0 52px 0 0;
+      }
+      .compare-col + .compare-col {
+        padding: 0 0 0 52px;
+        border-left: 1px solid var(--border-light);
+      }
+      .compare-label {
+        color: var(--text-muted-light);
+        font: 500 17px/1 var(--font-label);
+        letter-spacing: 0.14em;
+      }
+      .compare-col h2 {
+        margin-top: 28px;
+        color: var(--ink);
+        font: 600 54px/1.12 var(--font-display);
+      }
+      .compare-col h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .compare-list {
+        margin-top: 34px;
+        display: grid;
+        gap: 17px;
+        list-style: none;
+      }
+      .compare-list li {
+        display: grid;
+        grid-template-columns: 24px 1fr;
+        gap: 12px;
+        color: var(--text-muted-light);
+        font: 400 22px/1.45 var(--font-body);
+      }
+      .compare-list li > span {
+        grid-column: 2;
+      }
+      .compare-list li::before {
+        content: '—';
+        color: var(--gold);
+        font-family: var(--font-label);
+      }
+      .compare-col.theone .compare-label,
+      .compare-col.theone .compare-list li strong {
+        color: var(--gold);
+      }
+
+      /* ===========================================
+       PRODUCT EVIDENCE
+       =========================================== */
+      .evidence .evidence-copy {
+        position: absolute;
+        left: 144px;
+        top: 194px;
+        width: 500px;
+        z-index: 2;
+      }
+      .evidence h2 {
+        margin-top: 30px;
+        color: var(--text-warm);
+        font: 600 60px/1.14 var(--font-display);
+      }
+      .evidence h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .evidence .lead {
+        margin-top: 26px;
+        color: var(--text-muted-dark);
+        font: 400 24px/1.55 var(--font-body);
+      }
+      .evidence .image-wrap {
+        position: absolute;
+        right: 144px;
+        top: 190px;
+        width: 960px;
+        height: 590px;
+        border: 1px solid var(--border-dark);
+        z-index: 2;
+        overflow: hidden;
+      }
+      .evidence .image-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+      .evidence .image-tag {
+        position: absolute;
+        left: 26px;
+        bottom: 24px;
+        padding: 10px 14px;
+        color: var(--text-warm);
+        background: rgba(28, 38, 68, 0.88);
+        font: 500 14px/1 var(--font-label);
+        letter-spacing: 0.1em;
+      }
+      .evidence .evidence-note {
+        position: absolute;
+        left: 144px;
+        bottom: 174px;
+        width: 490px;
+        color: var(--text-hint-dark);
+        font: 400 15px/1.55 var(--font-label);
+      }
+      .evidence-light .evidence-copy {
+        left: 144px;
+        top: 194px;
+      }
+      .evidence-light .image-wrap {
+        right: 144px;
+        top: 190px;
+      }
+      .evidence-light .image-wrap img {
+        object-position: center;
+      }
+      .evidence-light .evidence-note {
+        color: var(--text-hint-light);
+      }
+
+      /* ===========================================
+       CAPABILITY MATRIX / STATUS
+       =========================================== */
+      .matrix-content {
+        position: absolute;
+        left: 144px;
+        right: 144px;
+        top: 194px;
+        bottom: 160px;
+        z-index: 2;
+      }
+      .matrix-content h2 {
+        margin-top: 30px;
+        color: var(--ink);
+        font: 600 60px/1.12 var(--font-display);
+      }
+      .matrix-content h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .matrix-table {
+        margin-top: 45px;
+        width: 100%;
+        border-top: 1px solid var(--border-light);
+      }
+      .matrix-row {
+        display: grid;
+        grid-template-columns: 1.45fr 1.2fr 0.8fr 0.8fr;
+        min-height: 66px;
+        align-items: center;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .matrix-row > * {
+        padding: 0 18px;
+      }
+      .matrix-row > * + * {
+        border-left: 1px solid var(--border-light);
+      }
+      .matrix-row.head {
+        color: var(--text-muted-light);
+        font: 500 15px/1 var(--font-label);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .matrix-row:not(.head) {
+        color: var(--ink);
+        font: 400 20px/1.4 var(--font-body);
+      }
+      .matrix-row:not(.head) .state {
+        color: var(--gold);
+        font: 500 15px/1.3 var(--font-label);
+        letter-spacing: 0.06em;
+      }
+      .matrix-row:not(.head) .state.muted {
+        color: var(--text-hint-light);
+      }
+      .status-grid {
+        position: absolute;
+        left: 144px;
+        right: 144px;
+        top: 210px;
+        bottom: 170px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 86px;
+        z-index: 2;
+      }
+      .status-grid h2 {
+        margin-top: 30px;
+        color: var(--text-warm);
+        font: 600 62px/1.12 var(--font-display);
+      }
+      .status-grid h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .status-grid .lead {
+        margin-top: 26px;
+        color: var(--text-muted-dark);
+        font: 400 24px/1.55 var(--font-body);
+        max-width: 650px;
+      }
+      .status-list {
+        border-top: 1px solid var(--border-dark);
+      }
+      .status-item {
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        gap: 16px;
+        padding: 20px 0;
+        border-bottom: 1px solid var(--border-dark);
+      }
+      .status-item .mark {
+        color: var(--gold);
+        font: 500 18px/1.5 var(--font-label);
+      }
+      .status-item h3 {
+        color: var(--text-warm);
+        font: 500 27px/1.25 var(--font-display);
+      }
+      .status-item p {
+        margin-top: 7px;
+        color: var(--text-muted-dark);
+        font: 400 16px/1.55 var(--font-body);
+      }
+      .status-item.pending .mark,
+      .status-item.pending h3 {
+        color: var(--text-hint-dark);
+      }
+
+      /* ===========================================
+       CLOSING / CONTROLS / EDITOR
+       =========================================== */
+      .closing .closing-copy {
+        position: absolute;
+        left: 144px;
+        top: 275px;
+        z-index: 2;
+      }
+      .closing h2 {
+        margin-top: 34px;
+        color: var(--text-warm);
+        font: 600 112px/1.05 var(--font-display);
+        letter-spacing: -0.04em;
+      }
+      .closing h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .closing p {
+        margin-top: 36px;
+        color: var(--text-muted-dark);
+        font: 400 28px/1.55 var(--font-body);
+      }
+      .closing .closing-mark {
+        position: absolute;
+        right: 260px;
+        top: 290px;
+        width: 280px;
+        height: 280px;
+        border: 1px solid rgba(200, 168, 112, 0.44);
+        border-radius: 50%;
+        z-index: 1;
+      }
+      .closing .closing-mark::before {
+        content: '';
+        position: absolute;
+        inset: 56px;
+        border: 1px solid rgba(200, 168, 112, 0.24);
+        border-radius: 50%;
+      }
+      .closing .closing-mark img {
+        position: absolute;
+        inset: 84px;
+        width: 110px;
+        height: 110px;
+        object-fit: contain;
+      }
+      .progress {
+        position: fixed;
+        left: 50%;
+        bottom: 16px;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0.8;
+      }
+      .progress span {
+        width: 26px;
+        height: 2px;
+        background: var(--border-dark);
+        transition:
+          width 0.3s,
+          background 0.3s;
+      }
+      .progress span.active {
+        width: 48px;
+        background: var(--gold);
+      }
+      .edit-hotzone {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 80px;
+        height: 80px;
+        z-index: 10000;
+        cursor: pointer;
+      }
+      .edit-toggle {
+        position: fixed;
+        top: 18px;
+        left: 18px;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 10001;
+        border: 1px solid var(--gold);
+        background: var(--navy);
+        color: var(--gold);
+        padding: 9px 12px;
+        font: 500 14px/1 var(--font-label);
+        cursor: pointer;
+        transition: opacity 0.3s;
+      }
+      .edit-toggle.show,
+      .edit-toggle.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .editor-status {
+        position: fixed;
+        left: 18px;
+        bottom: 18px;
+        z-index: 10001;
+        padding: 8px 10px;
+        color: var(--gold);
+        background: var(--navy);
+        font: 500 12px/1 var(--font-label);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .editor-status.show {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck-viewport">
+      <main class="deck-stage" id="deckStage">
+        <!-- === 01 COVER === -->
+        <section class="slide dark cover active visible" data-title="封面">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div class="brand"><img src="assets/theone-icon-ice-blue-v1.png" alt="TheOne" />TheOne 万能助手</div>
+            <div>AI 软件应用 · 路演提案</div>
+          </div>
+          <div class="cover-copy">
+            <div class="kicker reveal" data-editable>AI ZERO MARGINAL / 2026</div>
+            <h1 class="reveal" data-editable>把一句话，<br /><em>交付成结果。</em></h1>
+            <p class="lead reveal" data-editable>一个能看见分工、确认方向，并把复杂任务推进到底的万能助手。</p>
+            <div class="cover-meta reveal">
+              <span class="accent">THEONE</span><i class="short-rule"></i><span>AI SOFTWARE APPLICATION</span>
+            </div>
+          </div>
+          <div class="cover-orbit fade-in"><i class="dot"></i></div>
+          <img class="cover-logo reveal" src="assets/theone-icon-ice-blue-v1.png" alt="TheOne logo" />
+          <div class="foot"><span>AI 零边际</span><span class="right">01 / 12</span></div>
+        </section>
+
+        <!-- === 02 PROBLEM === -->
+        <section class="slide light standard" data-title="问题">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>01 / WHY NOW</div>
+            <div>THE GAP BETWEEN ANSWER AND OUTCOME</div>
+          </div>
+          <div class="body-grid">
+            <div>
+              <div class="kicker reveal">THE REAL BOTTLENECK</div>
+              <h2 class="reveal" data-editable>AI 已经会回答，<br /><em>但任务仍然停在对话框里。</em></h2>
+              <p class="lead reveal" data-editable>
+                真正复杂的工作，不是问出一句好答案，而是把目标拆开、找到合适能力、确认关键方向，再把结果交到手里。
+              </p>
+            </div>
+            <div class="side-rule reveal">
+              <div class="section-label">一个普通请求</div>
+              <div class="side-title" data-editable>“帮我做一份竞品调研，顺便出个结论。”</div>
+              <p class="side-copy">背后至少包含：搜集资料、判断来源、整理结构、反复确认、产出文件，以及对结果负责。</p>
+              <ul class="dash-list">
+                <li>聊天记录很长，但分工不可见</li>
+                <li>能力很多，但没有任务编排</li>
+                <li>结果生成了，却没有验收闭环</li>
+              </ul>
+            </div>
+          </div>
+          <div class="foot"><span>问题定义</span><span class="right">THEONE / 02</span></div>
+        </section>
+
+        <!-- === 03 THESIS === -->
+        <section class="slide dark statement" data-title="核心主张">
+          <div class="slide-frame"></div>
+          <div class="statement-copy">
+            <div class="kicker reveal">THE ONE-SENTENCE THESIS</div>
+            <h2 class="reveal" data-editable>不是给聊天框再加几个 Skill，<br /><em>而是给任务一条能走完的路。</em></h2>
+            <p class="support reveal" data-editable>
+              从“我想要什么”，到“下一步由谁做、为什么做、做到什么算完成”，TheOne 把过程变成可见的协作。
+            </p>
+          </div>
+          <div class="foot"><span>核心主张</span><span class="right">THEONE / 03</span></div>
+        </section>
+
+        <!-- === 04 FLOW === -->
+        <section class="slide light" data-title="任务链">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>02 / HOW IT WORKS</div>
+            <div>ONE REQUEST · FIVE MOVES</div>
+          </div>
+          <div class="flow">
+            <div class="kicker reveal">A VISIBLE DELIVERY CHAIN</div>
+            <h2 class="reveal" data-editable>把复杂请求，变成一条<em>可验收的任务链。</em></h2>
+            <p class="flow-intro reveal">每一步都有位置，每个分支都能回到同一个目标。</p>
+            <div class="flow-row">
+              <div class="flow-step reveal">
+                <div class="num">01</div>
+                <h3 data-editable>说清目标</h3>
+                <p>一句自然语言，保留真实意图。</p>
+                <i class="arrow">→</i>
+              </div>
+              <div class="flow-step reveal">
+                <div class="num">02</div>
+                <h3 data-editable>自动分派</h3>
+                <p>把工作拆成适合独立执行的子任务。</p>
+                <i class="arrow">→</i>
+              </div>
+              <div class="flow-step reveal">
+                <div class="num">03</div>
+                <h3 data-editable>先调研，再确认</h3>
+                <p>先看案例和来源，重要方向交给用户确认。</p>
+                <i class="arrow">→</i>
+              </div>
+              <div class="flow-step reveal">
+                <div class="num">04</div>
+                <h3 data-editable>隔离执行</h3>
+                <p>子任务拥有自己的工作空间与能力。</p>
+                <i class="arrow">→</i>
+              </div>
+              <div class="flow-step reveal">
+                <div class="num">05</div>
+                <h3 data-editable>父任务验收</h3>
+                <p>结果回到主线，按标准检查后交付。</p>
+              </div>
+            </div>
+          </div>
+          <div class="foot"><span>产品流程示意</span><span class="right">THEONE / 04</span></div>
+        </section>
+
+        <!-- === 05 TREE === -->
+        <section class="slide dark" data-title="任务树">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>02 / HOW IT WORKS</div>
+            <div>SEE THE WORK, NOT JUST THE ANSWER</div>
+          </div>
+          <div class="tree-panel">
+            <div class="kicker reveal">VISIBLE TASK TREE</div>
+            <h2 class="reveal" data-editable>让“正在做什么”，<br /><em>不再是黑箱。</em></h2>
+            <p class="reveal" data-editable>主任务负责目标，子任务负责推进。每个分支都有状态、边界和回传路径。</p>
+          </div>
+          <div class="tree reveal">
+            <div class="tree-root" data-editable>主任务：完成竞品调研与结论</div>
+            <div class="tree-branch">
+              <div class="tree-node" data-editable>研究市场现状<span>资料搜集 · 等待确认</span></div>
+              <div class="tree-node" data-editable>梳理竞品差异<span>独立工作空间 · 执行中</span></div>
+              <div class="tree-node" data-editable>汇总结论与交付<span>父任务验收 · 待回传</span></div>
+            </div>
+          </div>
+          <div class="foot"><span>任务树与隔离工作空间</span><span class="right">THEONE / 05</span></div>
+        </section>
+
+        <!-- === 06 APPROVAL === -->
+        <section class="slide light" data-title="确认机制">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>03 / TRUST BY DESIGN</div>
+            <div>RESEARCH BEFORE EXECUTION</div>
+          </div>
+          <div class="compare">
+            <div class="compare-col reveal">
+              <div class="compare-label">普通聊天</div>
+              <h2 data-editable>从一句话，<br />直接跳到<em>结论。</em></h2>
+              <ul class="compare-list">
+                <li>依据与来源藏在上下文里</li>
+                <li>方向不清时，只能继续追问</li>
+                <li>执行过程不可见，结果难复核</li>
+              </ul>
+            </div>
+            <div class="compare-col theone reveal">
+              <div class="compare-label">TheOne</div>
+              <h2 data-editable>先把选择摆出来，<br />再让任务<em>向前走。</em></h2>
+              <ul class="compare-list">
+                <li>
+                  <span><strong>先调研：</strong>寻找案例、方案与真实 Skill 来源</span>
+                </li>
+                <li>
+                  <span><strong>给方案：</strong>把可选路径、边界与验收方式说清</span>
+                </li>
+                <li>
+                  <span><strong>等同意：</strong>用户确认后才进入执行阶段</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="foot"><span>信任机制 · 先研究后执行</span><span class="right">THEONE / 06</span></div>
+        </section>
+
+        <!-- === 07 PRODUCT SCREEN === -->
+        <section class="slide dark evidence" data-title="真实界面">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>04 / THE WORKBENCH</div>
+            <div>AIONUI INTERFACE · REAL PRODUCT ASSET</div>
+          </div>
+          <div class="evidence-copy">
+            <div class="kicker reveal">ONE WORKBENCH</div>
+            <h2 class="reveal" data-editable>入口只有一个，<br /><em>上下文可以很多。</em></h2>
+            <p class="lead reveal" data-editable>
+              保留熟悉的 AionUI 桌面界面，把多模型、Bot、文件与工作目录放在同一条工作线上。
+            </p>
+          </div>
+          <div class="image-wrap reveal">
+            <img src="assets/aionui-home.png" alt="AionUI 对话主页真实界面" />
+            <div class="image-tag">真实产品界面 · AionUI</div>
+          </div>
+          <p class="evidence-note reveal">
+            素材说明：截图来自项目 resources/screenshot_1.png，展示真实 AionUI 入口与会话工作台，不是流程示意图。
+          </p>
+          <div class="foot"><span>工作台</span><span class="right">THEONE / 07</span></div>
+        </section>
+
+        <!-- === 08 FILE CONTEXT === -->
+        <section class="slide light evidence evidence-light" data-title="上下文">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>04 / THE WORKBENCH</div>
+            <div>CONTEXT THAT STAYS WITH THE TASK</div>
+          </div>
+          <div class="evidence-copy">
+            <div class="kicker reveal">CONTEXT, NOT COPY-PASTE</div>
+            <h2 class="reveal" data-editable>文件、对话和工作目录，<br /><em>在同一条上下文里。</em></h2>
+            <p class="lead reveal" data-editable>
+              结果不是漂浮在聊天里的文字，而是能落到文件、文章和工作空间中的产物。
+            </p>
+          </div>
+          <div class="image-wrap reveal">
+            <img src="assets/aionui-files.png" alt="AionUI 对话与文件工作区真实界面" />
+            <div class="image-tag">真实产品界面 · 文件工作区</div>
+          </div>
+          <p class="evidence-note reveal">
+            素材说明：截图来自项目 resources/screenshot_2.png，展示对话、代码分析与文件树共存的工作上下文。
+          </p>
+          <div class="foot"><span>文件与工作空间</span><span class="right">THEONE / 08</span></div>
+        </section>
+
+        <!-- === 09 CAPABILITIES === -->
+        <section class="slide dark standard" data-title="能力边界">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>05 / WHAT IT CAN DO</div>
+            <div>CAPABILITIES IN SERVICE OF THE TASK</div>
+          </div>
+          <div class="body-grid">
+            <div>
+              <div class="kicker reveal">ONE TASK · MANY CAPABILITIES</div>
+              <h2 class="reveal" data-editable>能力不是菜单，<br /><em>而是任务链上的节点。</em></h2>
+              <p class="lead reveal" data-editable>
+                在同一个工作台里，TheOne 已接入多模型、Bot 广场、GitHub 导入、作图、文章库与 Computer Use 等能力。
+              </p>
+            </div>
+            <div class="side-rule reveal">
+              <div class="section-label">能力被这样使用</div>
+              <div class="side-title" data-editable>从“找资料”到“交文件”，每一项能力都要有上下文。</div>
+              <ul class="dash-list">
+                <li>Bot：带着明确职责进入会话</li>
+                <li>作图：写入真实图像文件并回到工作区</li>
+                <li>文章库：沉淀 AI 情报与来源</li>
+                <li>Computer Use：在边界内执行桌面动作</li>
+              </ul>
+              <p class="small-caption">能力状态以当前源码、发布记录与交接证据为准，未验证部分不作已完成承诺。</p>
+            </div>
+          </div>
+          <div class="foot"><span>能力编排</span><span class="right">THEONE / 09</span></div>
+        </section>
+
+        <!-- === 10 MOAT === -->
+        <section class="slide light matrix-slide" data-title="差异化">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>06 / WHY THEONE</div>
+            <div>THE DIFFERENCE IS THE CONTROL LOOP</div>
+          </div>
+          <div class="matrix-content">
+            <div class="kicker reveal">CHAT IS THE FRONT DOOR, NOT THE PRODUCT</div>
+            <h2 class="reveal" data-editable>真正的差异，发生在<em>答案之后。</em></h2>
+            <div class="matrix-table reveal">
+              <div class="matrix-row head">
+                <div>关键维度</div>
+                <div>简单聊天 + 几个 Skill</div>
+                <div>TheOne</div>
+                <div>用户感受</div>
+              </div>
+              <div class="matrix-row">
+                <div>任务拆解</div>
+                <div>依赖用户继续追问</div>
+                <div class="state">自动分派</div>
+                <div>少盯一步</div>
+              </div>
+              <div class="matrix-row">
+                <div>过程可见</div>
+                <div>藏在对话上下文</div>
+                <div class="state">任务树</div>
+                <div>知道在做什么</div>
+              </div>
+              <div class="matrix-row">
+                <div>方向确认</div>
+                <div>执行后再返工</div>
+                <div class="state">先调研后同意</div>
+                <div>少走弯路</div>
+              </div>
+              <div class="matrix-row">
+                <div>工作边界</div>
+                <div>共享同一上下文</div>
+                <div class="state">子任务隔离</div>
+                <div>各做各的事</div>
+              </div>
+              <div class="matrix-row">
+                <div>结果交付</div>
+                <div>停在一句回复</div>
+                <div class="state">父任务验收</div>
+                <div>能拿去用</div>
+              </div>
+            </div>
+          </div>
+          <div class="foot"><span>差异化</span><span class="right">THEONE / 10</span></div>
+        </section>
+
+        <!-- === 11 STATUS === -->
+        <section class="slide dark status-slide" data-title="诚实边界">
+          <div class="slide-frame"></div>
+          <div class="chrome reveal">
+            <div>07 / EVIDENCE & NEXT</div>
+            <div>BUILD WITH A CLEAR BORDER</div>
+          </div>
+          <div class="status-grid">
+            <div>
+              <div class="kicker reveal">HONEST PROGRESS</div>
+              <h2 class="reveal" data-editable>我们交付的，<br /><em>必须先被验证。</em></h2>
+              <p class="lead reveal" data-editable>
+                这是一条正在变成产品的任务链。已经跑通的能力，和下一步要完成的闭环，清清楚楚地分开。
+              </p>
+            </div>
+            <div class="status-list reveal">
+              <div class="status-item">
+                <div class="mark">01</div>
+                <div>
+                  <h3>真实 AionUI 界面与 Pi 直连</h3>
+                  <p>源码与发布记录已有对应实现，界面素材用于本稿展示。</p>
+                </div>
+              </div>
+              <div class="status-item">
+                <div class="mark">02</div>
+                <div>
+                  <h3>Bot 广场、任务树、文章库、作图能力</h3>
+                  <p>已接入或已有真实验证；具体范围以项目文档和验收记录为准。</p>
+                </div>
+              </div>
+              <div class="status-item pending">
+                <div class="mark">03</div>
+                <div>
+                  <h3>完整自动链路与统一安装端验收</h3>
+                  <p>仍需继续验证与打包；不以单项真实成功代替全链路完成。</p>
+                </div>
+              </div>
+              <div class="status-item pending">
+                <div class="mark">04</div>
+                <div>
+                  <h3>官网在线服务与 Windows 版本</h3>
+                  <p>不在当前已验证范围内，后续由官网任务独立推进。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="foot"><span>证据边界</span><span class="right">THEONE / 11</span></div>
+        </section>
+
+        <!-- === 12 CLOSING === -->
+        <section class="slide dark closing" data-title="结尾">
+          <div class="slide-frame"></div>
+          <div class="closing-copy">
+            <div class="kicker reveal">AI ZERO MARGINAL / THEONE</div>
+            <h2 class="reveal" data-editable>让每一次委托，<br /><em>都有下一步。</em></h2>
+            <p class="reveal" data-editable>TheOne 万能助手 · AI 软件应用赛道</p>
+          </div>
+          <div class="closing-mark reveal"><img src="assets/theone-icon-ice-blue-v1.png" alt="TheOne" /></div>
+          <div class="foot"><span>AI 零边际</span><span class="right">12 / 12</span></div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ===========================================
+       PRESENTATION CHROME
+       =========================================== -->
+    <div class="progress" id="progress" aria-label="演示进度"></div>
+    <div class="edit-hotzone" id="editHotzone" aria-hidden="true"></div>
+    <button class="edit-toggle" id="editToggle" title="编辑模式（E）">✎ 编辑</button>
+    <div class="editor-status" id="editorStatus">编辑模式：按 E 退出 · Ctrl/Cmd+S 保存</div>
+
+    <script>
+      /* ===========================================
+       SLIDE PRESENTATION CONTROLLER
+       Fixed-stage scaling, keyboard, touch, wheel,
+       progress, and lightweight inline editing.
+       =========================================== */
+      class SlidePresentation {
+        constructor() {
+          this.slides = [...document.querySelectorAll('.slide')];
+          this.currentSlide = 0;
+          this.stage = document.getElementById('deckStage');
+          this.progress = document.getElementById('progress');
+          this.touchStartX = null;
+          this.wheelLock = false;
+          this.setupProgress();
+          this.setupStageScale();
+          this.setupKeyboardNav();
+          this.setupTouchNav();
+          this.setupWheelNav();
+          this.showSlide(0);
+        }
+
+        setupProgress() {
+          this.slides.forEach((slide, index) => {
+            const item = document.createElement('span');
+            item.title = `${index + 1} / ${this.slides.length} ${slide.dataset.title || ''}`;
+            item.addEventListener('click', () => this.showSlide(index));
+            this.progress.appendChild(item);
+          });
+        }
+
+        setupStageScale() {
+          const scale = () => {
+            const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            const x = (window.innerWidth - 1920 * factor) / 2;
+            const y = (window.innerHeight - 1080 * factor) / 2;
+            this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+          };
+          scale();
+          window.addEventListener('resize', scale);
+        }
+
+        setupKeyboardNav() {
+          window.addEventListener('keydown', (event) => {
+            if (event.target?.isContentEditable) return;
+            if (
+              event.key === 'ArrowRight' ||
+              event.key === 'ArrowDown' ||
+              event.key === 'PageDown' ||
+              event.key === ' '
+            ) {
+              event.preventDefault();
+              this.next();
+            }
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowUp' || event.key === 'PageUp') {
+              event.preventDefault();
+              this.previous();
+            }
+            if (event.key === 'Home') {
+              event.preventDefault();
+              this.showSlide(0);
+            }
+            if (event.key === 'End') {
+              event.preventDefault();
+              this.showSlide(this.slides.length - 1);
+            }
+          });
+        }
+
+        setupTouchNav() {
+          window.addEventListener(
+            'touchstart',
+            (event) => {
+              this.touchStartX = event.changedTouches[0].screenX;
+            },
+            { passive: true }
+          );
+          window.addEventListener(
+            'touchend',
+            (event) => {
+              if (this.touchStartX === null) return;
+              const delta = event.changedTouches[0].screenX - this.touchStartX;
+              if (Math.abs(delta) > 50) delta < 0 ? this.next() : this.previous();
+              this.touchStartX = null;
+            },
+            { passive: true }
+          );
+        }
+
+        setupWheelNav() {
+          window.addEventListener(
+            'wheel',
+            (event) => {
+              if (this.wheelLock || Math.abs(event.deltaY) < 18) return;
+              this.wheelLock = true;
+              event.deltaY > 0 ? this.next() : this.previous();
+              window.setTimeout(() => {
+                this.wheelLock = false;
+              }, 600);
+            },
+            { passive: true }
+          );
+        }
+
+        next() {
+          this.showSlide(this.currentSlide + 1);
+        }
+        previous() {
+          this.showSlide(this.currentSlide - 1);
+        }
+
+        showSlide(index) {
+          this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+          this.slides.forEach((slide, itemIndex) => {
+            const active = itemIndex === this.currentSlide;
+            slide.classList.toggle('active', active);
+            slide.classList.toggle('visible', active);
+          });
+          [...this.progress.children].forEach((item, itemIndex) =>
+            item.classList.toggle('active', itemIndex === this.currentSlide)
+          );
+          document.title = `${String(this.currentSlide + 1).padStart(2, '0')} / ${this.slides[this.currentSlide].dataset.title || 'TheOne 万能助手'}`;
+        }
+      }
+
+      /* ===========================================
+       INLINE EDITING
+       Text edits remain local to this browser and
+       are restored from localStorage on reload.
+       =========================================== */
+      class InlineEditor {
+        constructor() {
+          this.key = 'theone-presentation-edits-v1';
+          this.isActive = false;
+          this.toggle = document.getElementById('editToggle');
+          this.hotzone = document.getElementById('editHotzone');
+          this.status = document.getElementById('editorStatus');
+          this.hideTimeout = null;
+          this.editables = [...document.querySelectorAll('[data-editable]')];
+          this.load();
+          this.setup();
+        }
+
+        setup() {
+          this.toggle.addEventListener('click', () => this.toggleEditMode());
+          this.hotzone.addEventListener('click', () => this.toggleEditMode());
+          this.hotzone.addEventListener('mouseenter', () => {
+            clearTimeout(this.hideTimeout);
+            this.toggle.classList.add('show');
+          });
+          this.hotzone.addEventListener('mouseleave', () => this.deferHide());
+          this.toggle.addEventListener('mouseenter', () => clearTimeout(this.hideTimeout));
+          this.toggle.addEventListener('mouseleave', () => this.deferHide());
+          this.editables.forEach((element) => element.addEventListener('input', () => this.save()));
+          document.addEventListener('keydown', (event) => {
+            if ((event.key === 'e' || event.key === 'E') && !event.target?.isContentEditable) this.toggleEditMode();
+            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
+              event.preventDefault();
+              this.save();
+              this.flash('已保存到本机浏览器');
+            }
+          });
+        }
+
+        deferHide() {
+          clearTimeout(this.hideTimeout);
+          this.hideTimeout = window.setTimeout(() => {
+            if (!this.isActive) this.toggle.classList.remove('show');
+          }, 400);
+        }
+
+        toggleEditMode() {
+          this.isActive = !this.isActive;
+          document.body.classList.toggle('edit-mode', this.isActive);
+          this.toggle.classList.toggle('active', this.isActive);
+          this.editables.forEach((element) => {
+            element.contentEditable = this.isActive ? 'true' : 'false';
+          });
+          this.status.classList.toggle('show', this.isActive);
+        }
+
+        save() {
+          const values = this.editables.map((element) => element.innerHTML);
+          localStorage.setItem(this.key, JSON.stringify(values));
+        }
+
+        load() {
+          try {
+            const values = JSON.parse(localStorage.getItem(this.key) || '[]');
+            values.forEach((value, index) => {
+              if (this.editables[index]) this.editables[index].innerHTML = value;
+            });
+          } catch (error) {
+            console.warn('Local edits could not be restored', error);
+          }
+        }
+
+        flash(message) {
+          this.status.textContent = message;
+          this.status.classList.add('show');
+          window.setTimeout(() => {
+            this.status.textContent = '编辑模式：按 E 退出 · Ctrl/Cmd+S 保存';
+          }, 1600);
+        }
+      }
+
+      new SlidePresentation();
+      new InlineEditor();
+    </script>
+  </body>
+</html>
